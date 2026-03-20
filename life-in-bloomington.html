@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Life in Bloomington — RPBS Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #0e0e0e;
+      --paper: #f5f0e8;
+      --cream: #ede8da;
+      --accent: #c84b2f;
+      --accent-light: #e07055;
+      --muted: #7a7468;
+      --border: #d8d1c0;
+      --white: #fdfaf4;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper); color: var(--ink);
+      line-height: 1.75; -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .top-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .top-nav-left { display: flex; align-items: center; gap: 24px; }
+
+    .back-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.08em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--accent);
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .page-title-small {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .nav-toc {
+      display: flex; gap: 28px; list-style: none;
+    }
+
+    .nav-toc a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--muted); transition: color 0.2s;
+    }
+
+    .nav-toc a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 72px 60px 64px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 400; line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero-desc {
+      font-size: 0.95rem; color: var(--muted);
+      line-height: 1.85; margin-bottom: 20px;
+    }
+
+    .hero-img {
+      height: 340px;
+      background: linear-gradient(135deg, #c9d6c5 0%, #a8bfa8 40%, #7a9e7a 100%);
+      border-radius: 2px;
+      display: flex; align-items: flex-end;
+      overflow: hidden; position: relative;
+    }
+
+    .hero-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      position: absolute; inset: 0;
+    }
+
+    .hero-img-caption {
+      position: relative; z-index: 1;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.8);
+      padding: 12px 16px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.4));
+      width: 100%;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 64px 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:nth-child(even) { background: var(--white); }
+    .section:nth-child(odd) { background: var(--paper); }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+      font-weight: 400; letter-spacing: -0.02em;
+      margin-bottom: 28px; line-height: 1.2;
+    }
+
+    .section-intro {
+      font-size: 0.95rem; color: var(--muted);
+      line-height: 1.85; margin-bottom: 32px;
+      max-width: 680px;
+    }
+
+    /* ── TWO-COL LAYOUT ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* ── CARDS ── */
+    .info-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      padding: 24px 26px;
+    }
+
+    .info-card h4 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem; font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .info-card p {
+      font-size: 0.84rem; color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .info-card .card-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    /* ── RESOURCE TABLE ── */
+    .resource-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    .resource-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      text-align: left; padding: 10px 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .resource-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top; color: #3a362e;
+      line-height: 1.55;
+    }
+
+    .resource-table tr:last-child td { border-bottom: none; }
+    .resource-table tr:hover td { background: var(--cream); }
+
+    .resource-table a {
+      color: var(--accent); text-decoration: none;
+      font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    }
+
+    .resource-table a:hover { text-decoration: underline; }
+
+    /* ── BUDGET TABLE ── */
+    .budget-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 16px;
+    }
+
+    .budget-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--white);
+      background: var(--ink);
+      text-align: left; padding: 10px 14px;
+    }
+
+    .budget-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      color: #3a362e;
+    }
+
+    .budget-table tr:nth-child(even) td { background: var(--cream); }
+
+    .budget-table .total {
+      font-weight: 600; color: var(--ink);
+    }
+
+    /* ── CHECKLIST ── */
+    .checklist { list-style: none; }
+
+    .checklist li {
+      display: flex; gap: 14px; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: 0.88rem; color: #3a362e;
+    }
+
+    .checklist li:last-child { border-bottom: none; }
+
+    .checklist li::before {
+      content: '○';
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── HIGHLIGHT BOX ── */
+    .highlight-box {
+      background: var(--ink); color: var(--white);
+      padding: 28px 32px; margin: 28px 0;
+    }
+
+    .highlight-box h4 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem; font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .highlight-box p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+    }
+
+    .highlight-box strong { color: var(--white); }
+
+    /* ── PHOTO STRIP ── */
+    .photo-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px; margin: 32px 0;
+    }
+
+    .photo-slot {
+      aspect-ratio: 4/3;
+      overflow: hidden; position: relative;
+    }
+
+    .photo-slot-bg {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .photo-slot-bg span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.6);
+      text-align: center; padding: 0 16px;
+    }
+
+    /* ── CHECKLIST PHASES ── */
+    .phase {
+      margin-bottom: 32px;
+    }
+
+    .phase-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* ── NOTE ── */
+    .note {
+      font-size: 0.78rem; color: var(--muted);
+      font-style: italic; margin-top: 12px;
+      padding-left: 16px; border-left: 2px solid var(--border);
+    }
+
+    /* ── FOOTER ── */
+    .footer-bar {
+      padding: 24px 60px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; color: var(--muted);
+    }
+
+    .footer-bar a { color: var(--accent); text-decoration: none; }
+    .footer-bar a:hover { text-decoration: underline; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .top-nav { padding: 14px 20px; }
+      .nav-toc { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 48px 20px; gap: 32px; }
+      .hero-img { height: 220px; }
+      .section { padding: 48px 20px; }
+      .two-col { grid-template-columns: 1fr; gap: 24px; }
+      .three-col { grid-template-columns: 1fr; }
+      .photo-strip { grid-template-columns: 1fr 1fr; }
+      .footer-bar { padding: 20px; flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="top-nav">
+    <div class="top-nav-left">
+      <a href="index.html" class="back-link">← RPBS Lab</a>
+      <span class="page-title-small">Life in Bloomington</span>
+    </div>
+    <ul class="nav-toc">
+      <li><a href="#funding">Funding</a></li>
+      <li><a href="#housing">Housing</a></li>
+      <li><a href="#transit">Transit</a></li>
+      <li><a href="#health">Health</a></li>
+      <li><a href="#city">City Life</a></li>
+      <li><a href="#international">International</a></li>
+      <li><a href="#checklist">Checklist</a></li>
+      <li><a href="#links">Links</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">Prospective Members · RPBS Lab</div>
+      <h1>Welcome to Bloomington, Indiana</h1>
+      <p class="hero-desc">We know that choosing a lab means choosing a place to live. This guide is designed to help you make that decision with confidence — covering everything from stipends and housing costs to transit, healthcare, and what it actually feels like to live in Bloomington.</p>
+      <p class="hero-desc">Bloomington is a vibrant college town with a strong sense of community, excellent amenities for its size, and a quality of life that regularly surprises newcomers. We think you'll love it here.</p>
+      <p class="hero-desc" style="font-size:0.82rem; color:var(--muted);">Have questions not covered here? Email us at <a href="mailto:yoonlab2026@gmail.com" style="color:var(--accent);">yoonlab2026@gmail.com</a></p>
+    </div>
+    <div class="hero-img">
+      <div class="photo-slot-bg" style="background: linear-gradient(135deg, #3a5a3a 0%, #4a7a5a 50%, #5a8a6a 100%); position:absolute; inset:0;"></div>
+      <img src="img-campus.jpg" alt="IU Bloomington campus" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div class="hero-img-caption">Indiana University Bloomington · Sample Gates</div>
+    </div>
+  </div>
+
+  <!-- PHOTO STRIP -->
+  <div class="photo-strip" style="margin: 0;">
+    <div class="photo-slot">
+      <div class="photo-slot-bg" style="background: linear-gradient(135deg, #1a2a4a, #2a3a6a); position:absolute; inset:0;"></div>
+      <img src="img-downtown.jpg" alt="Bloomington downtown" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.45));font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.85);">Downtown Bloomington</div>
+    </div>
+    <div class="photo-slot">
+      <div class="photo-slot-bg" style="background: linear-gradient(135deg, #2a4a2a, #3a6a3a); position:absolute; inset:0;"></div>
+      <img src="img-bline.jpg" alt="B-Line Trail" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.45));font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.85);">B-Line Trail</div>
+    </div>
+    <div class="photo-slot">
+      <div class="photo-slot-bg" style="background: linear-gradient(135deg, #2a4a2a, #4a6a2a); position:absolute; inset:0;"></div>
+      <img src="img-switchyard.jpg" alt="Switchyard Park" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.45));font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.85);">Switchyard Park</div>
+    </div>
+  </div>
+
+  <!-- FUNDING & STIPENDS -->
+  <section class="section" id="funding">
+    <div class="section-label">01 — Funding & Cost of Living</div>
+    <h2>What to Expect Financially</h2>
+    <p class="section-intro">Bloomington is an affordable city by U.S. standards. Graduate stipends and postdoc salaries at IU are designed to be livable — below is an honest breakdown of published benchmarks to help you plan.</p>
+
+    <div class="two-col">
+      <div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.15rem; font-weight:400; margin-bottom:16px;">Stipends & Pay</h3>
+        <div class="highlight-box">
+          <h4>Graduate Student Minimum Stipend</h4>
+          <p>IU Bloomington has set a campus minimum stipend for student academic appointees (20 hrs/week, 10 months) of <strong>$24,000/year</strong> beginning July 2025. Appointments include health and dental insurance.</p>
+        </div>
+        <div class="highlight-box" style="margin-top:8px; background: var(--cream); color: var(--ink);">
+          <h4 style="color:var(--ink);">Postdoctoral Pay</h4>
+          <p style="color:var(--muted);">IU School of Medicine minimum: <strong style="color:var(--ink);">$61,008</strong> (Feb 2026), increasing to <strong style="color:var(--ink);">$62,232</strong> July 2026 (NIH NRSA year-0 scale). Confirm your specific unit's minimum directly with us.</p>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.15rem; font-weight:400; margin-bottom:16px;">Monthly Budget Estimates</h3>
+        <table class="budget-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Rent</th>
+              <th>Groceries</th>
+              <th>Utilities</th>
+              <th>Est. Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Single grad (shared)</td>
+              <td>~$605–900</td>
+              <td>~$300–375</td>
+              <td>~$133</td>
+              <td class="total">~$1,038–1,836</td>
+            </tr>
+            <tr>
+              <td>Couple (no children)</td>
+              <td>~$1,072–1,210</td>
+              <td>~$616</td>
+              <td>~$133</td>
+              <td class="total">~$1,821+</td>
+            </tr>
+            <tr>
+              <td>Family (2 adults + 2 kids)</td>
+              <td>~$1,572+</td>
+              <td>~$1,000</td>
+              <td>~$133+</td>
+              <td class="total">~$2,705+</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note">Sources: HUD FY2026 FMR for Monroe County; USDA Thrifty Food Plan Jan 2026; EIA Indiana avg. electricity. Transit is free for IU affiliates. Health insurance varies by appointment type.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;">
+      <h3 style="font-family:'DM Serif Display',serif; font-size:1.15rem; font-weight:400; margin-bottom:16px;">Official Rent Benchmarks (HUD FY2026)</h3>
+      <div class="three-col">
+        <div class="info-card">
+          <div class="card-icon">Studio / 0BR</div>
+          <h4>$966 / mo</h4>
+          <p>HUD Fair Market Rent benchmark for Monroe County. A practical baseline for planning.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">1 Bedroom</div>
+          <h4>$1,072 / mo</h4>
+          <p>Common for individual grad students or couples. Many options near campus in this range.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">2 Bedroom</div>
+          <h4>$1,210 / mo</h4>
+          <p>Shared with a roommate drops this to ~$605/person — very manageable on a stipend.</p>
+        </div>
+      </div>
+      <p class="note" style="margin-top:16px;">These are HUD Fair Market Rent benchmarks — a federal planning tool, not a guarantee of market prices. Actual listings vary. Start your search early, especially for August arrivals.</p>
+    </div>
+  </section>
+
+  <!-- HOUSING -->
+  <section class="section" id="housing">
+    <div class="section-label">02 — Housing</div>
+    <h2>Finding a Place to Live</h2>
+    <p class="section-intro">Bloomington has a range of housing options for graduate students and postdocs — from IU-managed apartments on campus to private rentals a short bus ride away. The key is starting early and knowing your options.</p>
+
+    <div class="two-col" style="margin-bottom:32px;">
+      <div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:14px;">IU-Managed Options</h3>
+        <table class="resource-table">
+          <thead>
+            <tr><th>Option</th><th>Best For</th><th>Link</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>IU Housing Apartments</strong><br>On-campus</td>
+              <td>Bundled utilities + predictable billing; semester billing includes water/electric/internet/laundry</td>
+              <td><a href="https://housing.indiana.edu/" target="_blank">housing.indiana.edu ↗</a></td>
+            </tr>
+            <tr>
+              <td><strong>Campus View Apartments</strong><br>On-campus</td>
+              <td>Families or students wanting apartment-style, unfurnished living</td>
+              <td><a href="https://housing.indiana.edu/residence-centers/campus-view.html" target="_blank">View ↗</a></td>
+            </tr>
+            <tr>
+              <td><strong>Tulip Tree Apartments</strong><br>On-campus</td>
+              <td>Families; highlights campus access and family-friendliness</td>
+              <td><a href="https://housing.indiana.edu/residence-centers/tulip-tree.html" target="_blank">View ↗</a></td>
+            </tr>
+            <tr>
+              <td><strong>IU Real Estate Rentals</strong><br>Near-campus</td>
+              <td>Grad/professional students and postdocs wanting private near-campus rentals</td>
+              <td><a href="https://www.realestate.indiana.edu/" target="_blank">realestate.indiana.edu ↗</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:14px;">Neighborhoods at a Glance</h3>
+        <table class="resource-table">
+          <thead>
+            <tr><th>Area</th><th>Why grads choose it</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Walk/bike-to-campus core</strong></td>
+              <td>Minimizes commute; maximizes library and seminar access. Higher demand.</td>
+            </tr>
+            <tr>
+              <td><strong>Downtown core</strong></td>
+              <td>Walkable dining, coffee, nightlife; public library access. Some weekend noise.</td>
+            </tr>
+            <tr>
+              <td><strong>East-side retail corridor</strong></td>
+              <td>Proximity to groceries and retail; newer units; good parking. Bus planning needed.</td>
+            </tr>
+            <tr>
+              <td><strong>South-side (trail/park adjacent)</strong></td>
+              <td>Great for families, runners, cyclists; near B-Line and Switchyard Park.</td>
+            </tr>
+            <tr>
+              <td><strong>North-side (near hospital)</strong></td>
+              <td>Convenient for medical collaboration; access to healthcare services.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:12px;">Off-campus resources: <a href="https://studentlife.indiana.edu/communities/off-campus-living/resources.html" target="_blank" style="color:var(--accent);">IU Off-Campus Living Guide ↗</a> · For lease review: IU Student Legal Services</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>Tip for International Arrivals</h4>
+      <p>Housing is often the biggest logistical challenge for international arrivals — deposits, SSN expectations, and lease timing can be tricky. <strong>Start with IU-managed options first</strong> (more predictable processes), then expand to private-market housing. For temporary lodging while you tour apartments, use IU's admissions visitor resources: <a href="https://admissions.indiana.edu/visit/maps-directions-parking.html" style="color:rgba(255,255,255,0.8);">admissions.indiana.edu ↗</a></p>
+    </div>
+  </section>
+
+  <!-- TRANSIT -->
+  <section class="section" id="transit">
+    <div class="section-label">03 — Getting Around</div>
+    <h2>Transportation in Bloomington</h2>
+    <p class="section-intro">Good news: you may not need a car. IU's campus bus system is free for all affiliates, and the city's bus network connects most residential areas to campus.</p>
+
+    <div class="three-col" style="margin-bottom:32px;">
+      <div class="info-card">
+        <div class="card-icon">Campus Bus</div>
+        <h4>Free for IU Affiliates</h4>
+        <p>Campus buses provide free rides and are a key transport option. IU students, faculty, and staff ride Bloomington Transit without paying. Real-time tracking available.</p>
+        <p style="margin-top:10px;"><a href="https://one.iu.edu/task/iub/bloomington-transit" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Bloomington Transit ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">Biking & Trails</div>
+        <h4>B-Line Trail</h4>
+        <p>A 3.1-mile multi-use corridor running from Adams Street to Country Club Drive, connecting neighborhoods to campus and downtown. Bloomington is very bikeable.</p>
+        <p style="margin-top:10px;"><a href="https://bloomington.in.gov/parks/trails/b-line-trail" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">B-Line Trail ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">By Car</div>
+        <h4>Parking & Permits</h4>
+        <p>If you plan to drive, research IU Parking permits early — don't sign a lease assuming easy campus parking. Permit rates and availability are published on the IU Parking site.</p>
+        <p style="margin-top:10px;"><a href="https://parking.indiana.edu/index.html" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">IU Parking ↗</a></p>
+      </div>
+    </div>
+
+    <h3 style="font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:16px;">Flying In? Use Indianapolis (IND)</h3>
+    <table class="resource-table">
+      <thead>
+        <tr><th>Airport</th><th>Code</th><th>Notes</th><th>Drive Time</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Indianapolis International</strong></td>
+          <td>IND</td>
+          <td>Recommended primary airport. Shuttle service with campus stops available.</td>
+          <td>~1 hour</td>
+        </tr>
+        <tr>
+          <td>John Glenn Columbus</td>
+          <td>CMH</td>
+          <td>Alternative option; plan ground transport carefully.</td>
+          <td>~1h 1m</td>
+        </tr>
+        <tr>
+          <td>Cincinnati/N. Kentucky</td>
+          <td>CVG</td>
+          <td>Alternative option; plan ground transport carefully.</td>
+          <td>~2h 47m</td>
+        </tr>
+        <tr>
+          <td>Chicago O'Hare</td>
+          <td>ORD</td>
+          <td>Not recommended as primary arrival airport due to distance.</td>
+          <td>~4h 34m</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:12px;">IU's international office recommends a shuttle from Indianapolis with campus stops. Details: <a href="https://ois.iu.edu/living-in-the-us/transportation/shuttle/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></p>
+  </section>
+
+  <!-- HEALTH -->
+  <section class="section" id="health">
+    <div class="section-label">04 — Health & Wellbeing</div>
+    <h2>Healthcare at IU</h2>
+    <p class="section-intro">IU provides solid on-campus health resources. Understanding how they work before you arrive will save you time and stress.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="info-card" style="margin-bottom:16px;">
+          <div class="card-icon">Primary Care</div>
+          <h4>Student Health Center</h4>
+          <p>The primary on-campus clinic. Publishes fee and insurance guidance. Spring 2026 health fee: $133.44/term.</p>
+          <p style="margin-top:8px;"><strong>Important:</strong> The Student Health Center is NOT affiliated with IU Health hospital system — the student health fee does not cover treatment at IU Health facilities.</p>
+          <p style="margin-top:8px;"><a href="https://healthcenter.indiana.edu/" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">healthcenter.indiana.edu ↗</a></p>
+        </div>
+        <div class="info-card" style="margin-bottom:16px;">
+          <div class="card-icon">Mental Health</div>
+          <h4>CAPS — Counseling & Psychological Services</h4>
+          <p>Free counseling and mental health support. Publishes a 24/7 crisis line and after-hours options. IU also offers TimelyCare for free 24/7 mental health support.</p>
+          <p style="margin-top:8px;"><a href="https://healthcenter.indiana.edu/counseling/index.html" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">CAPS ↗</a> &nbsp;·&nbsp; <a href="https://www.iu.edu/mental-health/find-resources/timely-care.html" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">TimelyCare ↗</a></p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">Emergency</div>
+          <h4>Emergency & After-Hours</h4>
+          <p>For emergencies: call <strong>911</strong>. IU Police (non-emergency): 812-855-4111. After-hours care referrals and crisis resources (including 988) are listed on the Student Health Center's after-hours page.</p>
+        </div>
+      </div>
+      <div>
+        <div class="info-card" style="margin-bottom:16px;">
+          <div class="card-icon">Health Insurance</div>
+          <h4>Coverage for Students & Postdocs</h4>
+          <p>IU administers health insurance via Anthem in partnership with University Health Plans. For students on voluntary plans, the 2025–2026 academic-year premium is approximately <strong>$5,131/year</strong>.</p>
+          <p style="margin-top:8px;">Graduate student research/teaching appointments typically include health and dental insurance. Confirm your specific benefits package in writing when you receive your offer.</p>
+          <p style="margin-top:8px;"><a href="https://hr.iu.edu/benefits/students/index.html" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">IU HR Benefits ↗</a></p>
+        </div>
+        <div class="info-card" style="margin-bottom:16px;">
+          <div class="card-icon">Families</div>
+          <h4>Childcare & Schools</h4>
+          <p>IU's Early Childhood Education Services operates <strong>three centers</strong>, serving children as young as <strong>six weeks</strong>, with fee assistance available for eligible full-time students.</p>
+          <p style="margin-top:8px;">Monroe County Community School Corporation (MCCSC) serves K-12 across ~23 schools in the Bloomington area.</p>
+          <p style="margin-top:8px;"><a href="https://childcare.indiana.edu/Centers/Campus-Childrens-Center.html" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Campus Childcare ↗</a></p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">Hospital</div>
+          <h4>IU Health Bloomington Hospital</h4>
+          <p>The primary emergency and specialty care hospital serving the Bloomington area. Separate from IU's Student Health Center system.</p>
+          <p style="margin-top:8px;"><a href="https://iuhealth.org/find-locations/iu-health-bloomington-hospital" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">IU Health ↗</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CITY LIFE -->
+  <section class="section" id="city">
+    <div class="section-label">05 — City Life</div>
+    <h2>Living in Bloomington</h2>
+    <p class="section-intro">Bloomington consistently surprises people with how much there is to do for a city of its size. It has a vibrant arts and food scene, excellent parks, and a strong sense of community built around the university.</p>
+
+    <div class="three-col" style="margin-bottom:32px;">
+      <div class="info-card">
+        <div class="card-icon">Food & Drink</div>
+        <h4>Dining & Coffee</h4>
+        <p>Downtown Bloomington has a dense cluster of independent restaurants, coffee shops, and craft breweries. The Kirkwood Avenue area is the heart of it.</p>
+        <p style="margin-top:8px;"><a href="https://www.visitbloomington.com/things-to-do/downtown/downtown-food-and-drink/" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Dining Guide ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">Outdoors</div>
+        <h4>Parks & Trails</h4>
+        <p>Switchyard Park is a 65-acre destination park in the heart of the city. The B-Line Trail connects neighborhoods. Lake Monroe is 20 minutes away for hiking and kayaking.</p>
+        <p style="margin-top:8px;"><a href="https://bloomington.in.gov/parks/parks/switchyard-park" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Switchyard Park ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">Markets & Culture</div>
+        <h4>Farmers Market & Arts</h4>
+        <p>The Bloomington Community Farmers' Market runs seasonally and is a beloved local institution. IU is also home to the Jacobs School of Music — world-class performances are free or low-cost.</p>
+        <p style="margin-top:8px;"><a href="https://bloomington.in.gov/farmers-market" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Farmers Market ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">Library</div>
+        <h4>Monroe County Public Library</h4>
+        <p>A major local resource offering community programs, events, and free access to books, media, and digital resources — great for families and lifelong learners.</p>
+        <p style="margin-top:8px;"><a href="https://mcpl.info/" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">mcpl.info ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">Climate</div>
+        <h4>Seasons</h4>
+        <p>Bloomington has four distinct seasons. Annual precipitation ~49 inches; snowfall ~17.5 inches. July avg. high ~85°F, January avg. high ~37°F. Autumn is particularly beautiful.</p>
+        <p style="margin-top:8px;"><a href="https://www.weather.gov/" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Weather Forecast ↗</a></p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">Campus Life</div>
+        <h4>Student Organizations & Events</h4>
+        <p>beINvolved is IU's hub for registered student organizations and events. IU also maintains a centralized research events calendar — a great way to connect beyond your department.</p>
+        <p style="margin-top:8px;"><a href="https://beinvolved.indiana.edu/" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">beINvolved ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERNATIONAL -->
+  <section class="section" id="international">
+    <div class="section-label">06 — International Students & Scholars</div>
+    <h2>Arriving from Abroad</h2>
+    <p class="section-intro">IU's Office of International Services (OIS) is your primary institutional authority for immigration and arrival logistics. Bookmark this office before anything else — especially if you encounter conflicting advice online.</p>
+
+    <div class="two-col">
+      <div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:14px;">Key OIS Resources</h3>
+        <ul class="checklist">
+          <li><span><strong>Social Security Number</strong> — for those receiving income: <a href="https://ois.iu.edu/student-employment/social-security/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+          <li><span><strong>Banking basics</strong> — how to choose a bank without SSN: <a href="https://ois.iu.edu/living-in-the-us/banking/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+          <li><span><strong>Cell phones</strong> — prepaid vs. postpaid options: <a href="https://ois.iu.edu/living-in-the-us/cell-phones/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+          <li><span><strong>Driver's license</strong> — Indiana BMV pathway: <a href="https://ois.iu.edu/living-in-the-us/transportation/drivers-license/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+          <li><span><strong>Taxes</strong> — international tax questionnaire and annual workflow: <a href="https://ois.iu.edu/living-in-the-us/taxes/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+          <li><span><strong>Health insurance requirements</strong> — J-1 minimum coverage levels: <a href="https://ois.iu.edu/living-in-the-us/health/insurance/student-insurance/exemptions.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+          <li><span><strong>Financial documentation</strong> — proof of funds for immigration docs: <a href="https://ois.iu.edu/admissions/cost-financial-aid/documentation/index.html" target="_blank" style="color:var(--accent);">ois.iu.edu ↗</a></span></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-family:'DM Serif Display',serif; font-size:1.1rem; font-weight:400; margin-bottom:14px;">Flying In</h3>
+        <div class="info-card" style="margin-bottom:16px;">
+          <div class="card-icon">Recommended Airport</div>
+          <h4>Fly into Indianapolis (IND)</h4>
+          <p>IU's international office explicitly recommends Indianapolis International Airport — it's "just over an hour" from Bloomington. A shuttle service with campus stops is available. <strong>Avoid flying into Chicago (O'Hare)</strong> due to distance and limited onward options.</p>
+          <p style="margin-top:8px;"><a href="https://ois.iu.edu/admissions/prepare-first-year/travel/index.html" target="_blank" style="color:var(--accent); font-family:'DM Mono',monospace; font-size:0.72rem;">Travel Guide ↗</a></p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">Community</div>
+          <h4>Community Groups & Online Spaces</h4>
+          <p>For student orgs and graduate government, use beINvolved. For alumni networking, the IU Alumni Association maintains a searchable chapter directory. Many students also use Reddit communities (r/bloomington, r/IndianaUniversity) for informal local tips — but validate critical facts (leases, immigration, benefits) with official IU/city sources.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARRIVAL CHECKLIST -->
+  <section class="section" id="checklist">
+    <div class="section-label">07 — Arrival Checklist</div>
+    <h2>Your Timeline</h2>
+    <p class="section-intro">Use this checklist to stay ahead of the logistics. The biggest mistakes come from starting too late — especially on housing, immigration documents, and funding confirmation.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="phase">
+          <div class="phase-title">Pre-arrival — 8–12 weeks before</div>
+          <ul class="checklist">
+            <li>Confirm your funding/benefits package in writing — note stipend, fee remissions, and insurance terms</li>
+            <li>Review OIS documentation and immigration timelines (proof-of-funding requirements)</li>
+            <li>Start housing search using IU Housing / IU Real Estate for IU-managed options</li>
+            <li>If arriving by air, plan to use Indianapolis (IND) and arrange ground transport or shuttle</li>
+            <li>If international: begin SSN, banking, and insurance planning via OIS resources</li>
+          </ul>
+        </div>
+        <div class="phase">
+          <div class="phase-title">First month</div>
+          <ul class="checklist">
+            <li>Finalize housing and utilities setup (City of Bloomington utilities provider list)</li>
+            <li>Set up IU Notify for emergency alerts — save local emergency numbers</li>
+            <li>Establish healthcare: know Student Health hours, fees, and after-hours procedures</li>
+            <li>Join at least one student org via beINvolved; subscribe to the IU Events calendar</li>
+            <li>Learn your free bus routes — download the Bloomington Transit app</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="phase">
+          <div class="phase-title">First semester</div>
+          <ul class="checklist">
+            <li>Build a routine around libraries, research seminars, and professional development workshops</li>
+            <li>If international: complete SSN steps when eligible for income; align taxes workflow with IU guidance</li>
+            <li>If driving long-term: start Indiana driver's license process early</li>
+            <li>Review and renew lease / parking plans before the end of the semester</li>
+          </ul>
+        </div>
+
+        <div class="highlight-box" style="margin-top:8px;">
+          <h4>Questions about the RPBS Lab specifically?</h4>
+          <p>Don't hesitate to email Dr. Yoon directly. We're happy to answer questions about lab life, research expectations, onboarding timelines, and anything else that will help you make your decision.</p>
+          <p style="margin-top:8px;"><strong><a href="mailto:yoonlab2026@gmail.com" style="color:rgba(255,255,255,0.9);">yoonlab2026@gmail.com ↗</a></strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK LINKS -->
+  <section class="section" id="links">
+    <div class="section-label">08 — Key Resources</div>
+    <h2>All Official Links</h2>
+    <p class="section-intro">Bookmark these official sources. They are more reliable than social media or informal advice — especially for immigration, housing, and health decisions.</p>
+
+    <table class="resource-table">
+      <thead>
+        <tr><th>Category</th><th>Resource</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Graduate student support (housing, childcare, policies)</td><td>Graduate School Bloomington</td><td><a href="https://graduate.indiana.edu/" target="_blank">graduate.indiana.edu ↗</a></td></tr>
+        <tr><td>Immigration / visas / arrival planning</td><td>Office of International Services</td><td><a href="https://ois.iu.edu/" target="_blank">ois.iu.edu ↗</a></td></tr>
+        <tr><td>Student health clinic + health fee</td><td>Student Health Center</td><td><a href="https://healthcenter.indiana.edu/" target="_blank">healthcenter.indiana.edu ↗</a></td></tr>
+        <tr><td>Counseling & mental health</td><td>CAPS</td><td><a href="https://healthcenter.indiana.edu/counseling/index.html" target="_blank">healthcenter.indiana.edu/counseling ↗</a></td></tr>
+        <tr><td>24/7 mental health support</td><td>TimelyCare</td><td><a href="https://www.iu.edu/mental-health/find-resources/timely-care.html" target="_blank">iu.edu/mental-health ↗</a></td></tr>
+        <tr><td>Research libraries + study spaces</td><td>Indiana University Libraries</td><td><a href="https://libraries.indiana.edu/" target="_blank">libraries.indiana.edu ↗</a></td></tr>
+        <tr><td>On-campus housing</td><td>IU Housing</td><td><a href="https://housing.indiana.edu/" target="_blank">housing.indiana.edu ↗</a></td></tr>
+        <tr><td>Near-campus rentals</td><td>IU Real Estate</td><td><a href="https://www.realestate.indiana.edu/" target="_blank">realestate.indiana.edu ↗</a></td></tr>
+        <tr><td>Off-campus living guide</td><td>IU Student Life</td><td><a href="https://studentlife.indiana.edu/communities/off-campus-living/resources.html" target="_blank">studentlife.indiana.edu ↗</a></td></tr>
+        <tr><td>Transit (free for IU affiliates)</td><td>Bloomington Transit</td><td><a href="https://bloomingtontransit.com/maps-and-schedules/" target="_blank">bloomingtontransit.com ↗</a></td></tr>
+        <tr><td>Campus bus info</td><td>IU Transportation</td><td><a href="https://bloomington.iu.edu/about/transportation.html" target="_blank">bloomington.iu.edu ↗</a></td></tr>
+        <tr><td>Parking permits</td><td>IU Parking</td><td><a href="https://parking.indiana.edu/index.html" target="_blank">parking.indiana.edu ↗</a></td></tr>
+        <tr><td>Campus map</td><td>IU Campus Maps</td><td><a href="https://map.iu.edu/index.html" target="_blank">map.iu.edu ↗</a></td></tr>
+        <tr><td>Emergency alerts</td><td>IU Notify</td><td><a href="https://protect.iu.edu/emergency-continuity/emergency-alerts/iu-notify.html" target="_blank">protect.iu.edu ↗</a></td></tr>
+        <tr><td>City utilities (electricity, internet, etc.)</td><td>City of Bloomington Utilities</td><td><a href="https://bloomington.in.gov/utilities/information" target="_blank">bloomington.in.gov ↗</a></td></tr>
+        <tr><td>Career & internships</td><td>Handshake</td><td><a href="https://iubloomington.joinhandshake.com/" target="_blank">iubloomington.joinhandshake.com ↗</a></td></tr>
+        <tr><td>Student organizations & events</td><td>beINvolved</td><td><a href="https://beinvolved.indiana.edu/" target="_blank">beinvolved.indiana.edu ↗</a></td></tr>
+        <tr><td>Research events calendar</td><td>IU Research Events</td><td><a href="https://research.iu.edu/news-events/events/iub-research-events.html" target="_blank">research.iu.edu ↗</a></td></tr>
+        <tr><td>Campus childcare</td><td>IU Early Childhood Education</td><td><a href="https://childcare.indiana.edu/Centers/Campus-Childrens-Center.html" target="_blank">childcare.indiana.edu ↗</a></td></tr>
+        <tr><td>K-12 schools</td><td>Monroe County Community School Corp</td><td><a href="https://www.mccsc.edu/" target="_blank">mccsc.edu ↗</a></td></tr>
+        <tr><td>Farmers market</td><td>Bloomington Farmers Market</td><td><a href="https://bloomington.in.gov/farmers-market" target="_blank">bloomington.in.gov ↗</a></td></tr>
+        <tr><td>Parks & trails</td><td>Switchyard Park</td><td><a href="https://bloomington.in.gov/parks/parks/switchyard-park" target="_blank">bloomington.in.gov ↗</a></td></tr>
+        <tr><td>Public library</td><td>Monroe County Public Library</td><td><a href="https://mcpl.info/" target="_blank">mcpl.info ↗</a></td></tr>
+        <tr><td>Visiting / lodging</td><td>Visit Bloomington</td><td><a href="https://www.visitbloomington.com/" target="_blank">visitbloomington.com ↗</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-bar">
+    <span>© 2026 RPBS Lab · Indiana University Bloomington</span>
+    <span><a href="index.html">← Back to RPBSLab</a> · <a href="mailto:yoonlab2026@gmail.com">yoonlab2026@gmail.com</a></span>
+  </footer>
+
+</body>
+</html>
