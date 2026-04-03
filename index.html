@@ -55,10 +55,13 @@
       font-family: 'DM Serif Display', serif;
       font-size: 1.35rem;
       letter-spacing: -0.02em;
-      color: var(--accent);
     }
 
     .nav-logo-text span { color: var(--ink); margin-left: 0.25em; }
+    .nav-logo-text .l-r { color: var(--ink); }
+    .nav-logo-text .l-p { color: #c84b2f; }
+    .nav-logo-text .l-b { color: #4a7c5a; }
+    .nav-logo-text .l-s { color: #3b8ea5; }
 
     nav ul {
       display: flex; gap: 36px; list-style: none;
@@ -133,8 +136,10 @@
 
     h1 em {
       font-style: italic;
-      color: var(--accent);
     }
+    h1 em.c-red   { color: #c84b2f; } /* Programming */
+    h1 em.c-green { color: #4a7c5a; } /* biology     */
+    h1 em.c-blue  { color: #3b8ea5; } /* sound       */
 
     .hero-desc {
       font-size: 1.05rem;
@@ -715,15 +720,16 @@
       display: flex; align-items: center; gap: 10px;
     }
 
-    .footer-logo img { height: 30px; width: auto; filter: brightness(0) invert(1); opacity: 0.7; }
-
     .footer-logo-text {
       font-family: 'DM Serif Display', serif;
       font-size: 1.1rem;
-      color: var(--accent);
     }
 
     .footer-logo-text span { color: var(--white); margin-left: 0.25em; }
+    .footer-logo-text .l-r { color: var(--white); opacity: 0.9; }
+    .footer-logo-text .l-p { color: #e07d66; }
+    .footer-logo-text .l-b { color: #7ab897; }
+    .footer-logo-text .l-s { color: #7ac3d4; }
 
     footer p {
       font-family: 'DM Mono', monospace;
@@ -793,7 +799,7 @@
   <!-- NAV -->
   <nav>
     <a href="#home" class="nav-logo">
-      <span class="nav-logo-text">RPBS<span>Lab</span></span>
+      <span class="nav-logo-text"><span class="l-r">R</span><span class="l-p">P</span><span class="l-b">B</span><span class="l-s">S</span><span> Lab</span></span>
     </a>
     <ul>
       <li><a href="#about">About</a></li>
@@ -812,7 +818,7 @@
     <div class="hero-grid"></div>
     <div class="hero-content fade-in">
       <div class="hero-eyebrow">Intelligent Systems Engineering · Indiana University Bloomington</div>
-      <h1>Programming<br><em>biology</em><br>with sound</h1>
+      <h1><em class="c-red">Programming</em><br><em class="c-green">biology</em><br>with <em class="c-blue">sound</em></h1>
       <p class="hero-desc">
         The RPBS Lab develops ultrasound-based technologies to remotely control biological systems — engineering programmable cellular therapies for next-generation cancer immunotherapy.
       </p>
@@ -918,8 +924,8 @@
       </div>
       <div class="research-card fade-in" style="transition-delay:0.15s">
         <div class="card-tag">Area · 04</div>
-        <h3>Acoustic Tools & Biophysical Imaging</h3>
-        <p>We develop acoustic tweezer platforms and advanced imaging tools for probing cellular mechanobiology. These technologies enable real-time visualization and manipulation of cellular responses, supporting both fundamental research and the development of image-guided therapies.</p>
+        <h3>Ultrasound Imaging of Cellular Responses</h3>
+        <p>We develop ultrasound-based imaging tools to visualize and quantify cellular responses in real time. By linking acoustic readouts to functional cell states, we create feedback-capable platforms that bridge fundamental mechanobiology with the practical demands of image-guided therapy development.</p>
       </div>
     </div>
   </section>
@@ -1016,6 +1022,15 @@
       <h2>Selected Publications</h2>
     </div>
     <div class="pub-list">
+      <div class="pub-item fade-in">
+        <span class="pub-year">2026</span>
+        <div class="pub-content">
+          <div class="pub-title">Sono-Mechanogenetics: Linking Ultrasound Physics with Cellular Mechanobiology</div>
+          <div class="pub-authors">Qu Y†, Wei F†, <strong>Yoon CW</strong>*, Zhou Q, Wang Y*. <span style="font-size:0.8em; color:var(--muted);">(† equal contribution)</span></div>
+          <div class="pub-venue">Advanced Science (in press)</div>
+        </div>
+        <a href="#" class="pub-link">Paper ↗</a>
+      </div>
       <div class="pub-item fade-in">
         <span class="pub-year">2026</span>
         <div class="pub-content">
@@ -1188,8 +1203,7 @@
   <!-- FOOTER -->
   <footer>
     <div class="footer-logo">
-      <img src="RPBS-logo.svg" alt="RPBS">
-      <span class="footer-logo-text">RPBS<span>Lab</span></span>
+      <span class="footer-logo-text"><span class="l-r">R</span><span class="l-p">P</span><span class="l-b">B</span><span class="l-s">S</span><span> Lab</span></span>
     </div>
     <p>© 2026 RPBS Lab, Indiana University Bloomington. All rights reserved.</p>
     <div class="footer-links">
